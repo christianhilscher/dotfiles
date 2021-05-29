@@ -1,0 +1,75 @@
+Config { font = "xft:Noto Sans LGC:size=11:style=Regular"
+	, additionalFonts = [ "xft:FontAwesome:pixelsize=13" ]
+        , borderColor = "black"
+        , border = TopB
+        , bgColor = "black"
+        , fgColor = "grey"
+        , position = TopW C 100
+        , commands = [ Run Weather "EDFM" 
+				[ "--template"
+     			 	, "<station>: <skyCondition> <fc=#4682B4><tempC></fc>°C <fc=#4682B4><rh></fc>%"
+     			 	] 36000
+
+			, Run DynNetwork
+      				[ "--template" , "↓<rx>kB/s ↑<tx>kB/s"
+      				, "--Low"      , "1000"       -- units: B/s
+      				, "--High"     , "5000"       -- units: B/s
+      				] 10
+
+			, Run Wireless "wlo1"
+				[ "--template" , "essid"] 10
+
+
+			, Run Cpu 
+      				[ "--template" , " <fn=1></fn> <total>%"
+      				, "--Low"      , "75"         -- units: %
+      				, "--High"     , "95"         -- units: %
+      				, "--high"     , "orange"
+      				] 10
+
+			
+			, Run CoreTemp
+      				[ "--template" , "Temp: [<core0>, <core1>, <core2>, <core3>]°C"
+      				, "--Low"      , "70"        -- units: °C
+      				, "--High"     , "80"        -- units: °C
+      				, "--low"      , "green"
+      				, "--normal"   , "orange"
+      				, "--high"     , "red"
+      				] 50 
+
+			, Run Memory
+      				[ "--template" ,"<fn=1> </fn> <usedratio>%"
+      				, "--Low"      , "70"        -- units: %
+      				, "--High"     , "90"        -- units: %
+      				, "--normal"   , "orange"
+      				, "--high"     , "red"
+      				] 10
+
+        		, Run Battery        [ "--template" , "<acstatus>"
+                             			, "--Low"      , "10"        -- units: %
+                             			, "--High"     , "50"        -- units: %
+                             			, "--low"      , "darkred"
+                             			, "--normal"   , "darkorange"
+
+                             			, "--" -- battery specific options
+                                       			-- discharging status
+                                       			, "-o"	, "<fn=1> </fn> <left>% "
+                                       			-- AC "on" status
+                                       			, "-O"	, "<fc=#dAA520>Charging</fc>"
+                                       			-- charged status
+                                       			, "-i"	, "<fc=#6790eb><fn=1></fn></fc>"
+                             			] 50
+                        
+			, Run Date "%A, %Y-%m-%d | %H:%M:%S" "date" 10
+                        
+			, Run StdinReader
+
+			, Run Com "/bin/bash" ["-c", "lux -G"] "myBrightness" 1
+
+			, Run Com "/bin/bash" ["-c", "amixer get Master | awk '$0~/%/{print $5; exit}' | tr -d '[]' "] "myVolume" 1 
+                        ]
+        , sepChar = "%"
+        , alignSep = "}{"
+        , template = "<fn=0>%StdinReader%</fn> }{%cpu% | %memory% | %dynnetwork% | %battery% | %myVolume% | %date% "
+
+        }
