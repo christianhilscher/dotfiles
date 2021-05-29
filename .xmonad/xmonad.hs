@@ -59,7 +59,7 @@ mydefaults = def {
         , startupHook         = myStartupHook
         , manageHook          = myManageHook
         , handleEventHook     = fullscreenEventHook <+> docksEventHook <+> minimizeEventHook
-        , terminal 	      = myTerminal
+        , terminal            = myTerminal
         }
 
 myTitleColor = "#c91a1a" -- color of window title

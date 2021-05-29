@@ -1,7 +1,0 @@
-
-xmonad.hs:62:20: warning: [-Wtabs]
-    Tab character found here.
-    Please use spaces instead.
-   |
-62 |         , terminal            = myTerminal
-   |                    ^^^^^
